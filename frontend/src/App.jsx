@@ -6,7 +6,8 @@ import './App.css';
 // จำลอง User Session ID
 const USER_ID = Math.random().toString(36).substring(2, 10);
 // เชื่อมต่อ WebSocket
-const socket = io('http://localhost:3000');
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+const socket = io(API_URL);
 
 function App() {
   const [stalls, setStalls] = useState([]);
@@ -15,7 +16,7 @@ function App() {
 
   useEffect(() => {
     // 1. ดึงข้อมูลครั้งแรกเมื่อโหลดหน้า
-    fetch('http://localhost:3000/api/stalls')
+    fetch(`${API_URL}/api/stalls`)
       .then(res => res.json())
       .then(data => {
         setStalls(data);
@@ -57,7 +58,7 @@ function App() {
     }
     
     try {
-      const res = await fetch(`http://localhost:3000/api/stalls/${stall.id}/hold`, {
+      const res = await fetch(`${API_URL}/api/stalls/${stall.id}/hold`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: USER_ID })
@@ -77,7 +78,7 @@ function App() {
     if (!window.confirm(`ยืนยันการชำระเงินสำหรับ ${stall.name} ใช่หรือไม่?`)) return;
 
     try {
-      const res = await fetch(`http://localhost:3000/api/stalls/${stall.id}/book`, {
+      const res = await fetch(`${API_URL}/api/stalls/${stall.id}/book`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: USER_ID })
